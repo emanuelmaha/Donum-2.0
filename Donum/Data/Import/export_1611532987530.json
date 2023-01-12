@@ -1,0 +1,46 @@
+{
+  "name": "domnu",
+  "instanceToken": "at4cpznl2n",
+  "encrypted": false,
+  "passwordHash": null,
+  "collections": [
+    {
+      "name": "user",
+      "schemaHash": "2f711cf110ba544e2e8c39d9a58898a2",
+      "encrypted": false,
+      "passwordHash": null,
+      "docs": [
+        {
+          "username": "mdura",
+          "password": "1e14be7d72312bd2e2caa9ce003d3ede",
+          "name": "Marius Dura",
+          "email": "durabuild7@gmail.com",
+          "permission": 1,
+          "_id": "gaqisqcdam:1509305644378"
+        },
+        {
+          "username": "emahalean",
+          "password": "5621d390d69184bbdc0f9435991f3ebc",
+          "name": "Emanuel Mahalean",
+          "email": "emanuel.maha@gmail.com",
+          "permission": 1,
+          "_id": "ts4nycv86r:1509252575666"
+        }
+      ]
+    },
+    {
+      "name": "note",
+      "schemaHash": "98ef7c1d2e1bca453cc417116cb0529f",
+      "encrypted": false,
+      "passwordHash": null,
+      "docs": [
+        {
+          "text": "Rogate neincetat!",
+          "isDone": true,
+          "createDate": "1515907836633",
+          "_id": "wzqpeze4pu:1515907836637"
+        }
+      ]
+    }
+  ]
+}
