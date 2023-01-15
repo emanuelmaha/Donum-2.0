@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Donum.Models;
 
@@ -18,7 +19,7 @@ public class Collection
 	public string       SchemaHash   { get; set; }
 	public bool         Encrypted    { get; set; }
 	public object       PasswordHash { get; set; }
-	public List<object> Docs         { get; set; }
+	public List<JObject> Docs         { get; set; }
 }
 
 public class UserDto

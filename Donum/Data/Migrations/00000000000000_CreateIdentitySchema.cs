@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace HelloWorld.Data.Migrations
+namespace Donum.Data.Migrations
 {
 	public partial class CreateIdentitySchema : Migration
 	{

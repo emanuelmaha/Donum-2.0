@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.ApiAuthorization.IdentityServer;
 using Microsoft.AspNetCore.Mvc;
 
-namespace HelloWorld.Controllers;
+namespace Donum.Controllers;
 
 public class OidcConfigurationController : Controller
 {

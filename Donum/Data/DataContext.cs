@@ -6,12 +6,12 @@ using Donum.Models;
 
 namespace Donum.Data;
 
-public class ApplicationDbContext : ApiAuthorizationDbContext<ApplicationUser>
+public class DataContext : ApiAuthorizationDbContext<ApplicationUser>
 {
 	public DbSet<Member> Members { get; set; }
 
 	public DbSet<Donation> Donations { get; set; }
 	
-	public ApplicationDbContext(DbContextOptions options, IOptions<OperationalStoreOptions> operationalStoreOptions)
+	public DataContext(DbContextOptions options, IOptions<OperationalStoreOptions> operationalStoreOptions)
 		: base(options, operationalStoreOptions) { }
 }

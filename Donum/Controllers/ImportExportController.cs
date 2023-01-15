@@ -3,11 +3,11 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Donum.Controllers;
 
-public class ImportController : AuthorizeController
+public class ImportExportController : AuthorizeController
 {
 	private readonly IImporterService _importerService;
 
-	public ImportController(IImporterService importerService)
+	public ImportExportController(IImporterService importerService)
 	{
 		_importerService = importerService;
 	}

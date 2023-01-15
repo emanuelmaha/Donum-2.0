@@ -2,16 +2,27 @@ table {
   border-collapse: collapse;
   width: 100%;
 }
+
 th, td {
   border: 1px solid #dddddd;
   padding: 8px;
   text-align: left;
 }
+
 th {
   background-color: #dddddd;
   font-weight: bold;
 }
+
 /* Add a hover style to the rows */
 tbody tr:hover {
   background-color: #f2f2f2;
+}
+
+.search-input {
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  width: 50%;
+  margin: 15px auto;
 }

@@ -1,34 +1,19 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Donum.Data;
+using Donum.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Donum.Controllers;
 
-[Authorize]
-[ApiController]
-[Route("[controller]")]
-public class WeatherForecastController : ControllerBase
+public class MembersController : AuthorizeController
 {
-	private static readonly string[] Summaries = new[]
-	{
-		"Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-	};
+	private readonly DataContext _dbContext;
 
-	private readonly ILogger<WeatherForecastController> _logger;
-
-	public WeatherForecastController(ILogger<WeatherForecastController> logger)
+	public MembersController(DataContext dbContext)
 	{
-		_logger = logger;
+		_dbContext = dbContext;
 	}
 
 	[HttpGet]
-	public IEnumerable<WeatherForecast> Get()
-	{
-		return Enumerable.Range(1, 5).Select(index => new WeatherForecast
-			{
-				Date         = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-				TemperatureC = Random.Shared.Next(-20, 55),
-				Summary      = Summaries[Random.Shared.Next(Summaries.Length)]
-			})
-			.ToArray();
-	}
+	public List<Member> Get() => _dbContext.Members.ToList();
 }

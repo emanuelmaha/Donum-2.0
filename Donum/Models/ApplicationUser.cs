@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace HelloWorld.Models;
+namespace Donum.Models;
 
 public class ApplicationUser : IdentityUser { }

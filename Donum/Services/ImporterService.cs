@@ -1,11 +1,13 @@
+using System.Globalization;
 using Donum.Data;
 using Donum.Helper;
 using Donum.Models;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Donum.Services;
 
-public class ImporterService
+public class ImporterService : IImporterService
 {
 	private readonly DataContext _dbContext;
 
@@ -18,38 +20,45 @@ public class ImporterService
 		Collection donation = payload.Collections.FirstOrDefault(c => c.Name == "donation");
 
 		if (members != null) {
-			foreach (MemberDto memberDto in members.Docs) {
+			foreach (JObject memberJson in members.Docs) {
+				var      memberDto = memberJson.ToObject<MemberDto>();
+				TextInfo textInfo  = new CultureInfo("en-US", false).TextInfo;
 				var member = new Member
 				{
-					Address   = memberDto.Address,
-					FirstName = memberDto.FirstName,
-					LastName  = memberDto.LastName
+					Address   = textInfo.ToTitleCase(memberDto.Address ?? ""),
+					FirstName = textInfo.ToTitleCase(memberDto.FirstName ?? ""),
+					LastName  = textInfo.ToTitleCase(memberDto.LastName ?? ""),
+					PhoneNumber = string.Empty
 				};
-
-				IEnumerable<Donation> donations = (donation?.Docs as ICollection<DonationDto>)
-					.Where(d => d.MemberId == memberDto.Id).Select(d => new Donation
+				List<JObject>? donations = donation?.Docs.Where(d => d["memberId"].ToString() == memberDto.Id).ToList();
+				if (donations != null && donations.Any()) {
+					List<Donation> listDonation = donations.Select(d => new Donation
 					{
 						Member         = member,
-						DateOfReceived = Convert.ToDouble(d.DateOfReceived).UnixTimeStampToDateTime(),
-						Sum            = d.Sum,
-						Scope          = d.Scope,
-						CheckNo        = d.CheckNo
-					});
-				_dbContext.Donations.AddRange(donations);
+						Sum            = Convert.ToInt32(d["sum"]?.ToString() ?? ""),
+						Scope          = textInfo.ToTitleCase(d["scope"]?.ToString() ?? ""),
+						CheckNo        = d["checkNo"]?.ToString() ?? string.Empty,
+						DateOfReceived = DateTime.Parse(d["dateOfReceived"]?.ToString() ?? ""),
+						CreateDate     = (d["createdDate"]?.ToString() ?? "").UnixTimeStampToDateTime()
+					}).ToList();
+
+
+					if (listDonation.Any()) {
+						_dbContext.Donations.AddRange(listDonation);
+					}
+				}
 			}
 
 			_dbContext.SaveChanges();
 		}
 	}
 
-	public DonumDto LoadJson()
+	private DonumDto LoadJson()
 	{
-		var sCurrentDirectory = AppDomain.CurrentDomain.BaseDirectory;
-		var basePath          = Path.Combine(sCurrentDirectory, @"..\DataBase\Import\export_1673197150625.json");
-		var sFilePath         = Path.GetFullPath(basePath);
-
-		using var r    = new StreamReader("file.json");
-		var       json = r.ReadToEnd();
+		using var r =
+			new StreamReader(
+				@"C:\Users\Emanuel.Mahalean\RiderProjects\Donum\Donum\Data\Import\export_1673197150625.json");
+		var json = r.ReadToEnd();
 		return JsonConvert.DeserializeObject<DonumDto>(json);
 	}
 }

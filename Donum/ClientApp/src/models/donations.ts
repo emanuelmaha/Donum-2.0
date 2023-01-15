@@ -1,8 +1,8 @@
-import {Member} from "../../models/member";
+import {Member} from "./member";
 
 export interface Donations {
   member: Member;
   sum: number;
   scope: string;
-  date: string;
+  dateOfReceived: string;
 }

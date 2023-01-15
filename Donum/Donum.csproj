@@ -8,10 +8,11 @@
         <SpaProxyServerUrl>https://localhost:44474</SpaProxyServerUrl>
         <SpaProxyLaunchCommand>npm start</SpaProxyLaunchCommand>
         <ImplicitUsings>enable</ImplicitUsings>
-        <RootNamespace>HelloWorld</RootNamespace>
+        <RootNamespace>Donum</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="itext7" Version="7.1.14" />
         <PackageReference Include="Microsoft.AspNetCore.ApiAuthorization.IdentityServer" Version="7.0.1" />
         <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="7.0.1" />
         <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="7.0.1" />
@@ -24,12 +25,27 @@
 
     <ItemGroup>
         <None Update="app.db" CopyToOutputDirectory="PreserveNewest" ExcludeFromSingleFile="true" />
+        <None Remove="Data\Import\**" />
     </ItemGroup>
     <ItemGroup>
         <!-- Don't publish the SPA source files, but do show them in the project files list -->
         <Content Remove="$(SpaRoot)**" />
         <None Remove="$(SpaRoot)**" />
         <None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**" />
+        <Content Remove="Data\Import\**" />
+    </ItemGroup>
+    <ItemGroup>
+      <Compile Remove="Data\Import\**" />
+    </ItemGroup>
+    <ItemGroup>
+      <EmbeddedResource Remove="Data\Import\**" />
+    </ItemGroup>
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="Data\Import\donations_41122.json" />
+      <_ContentIncludedByDefault Remove="Data\Import\donations_Temp.json" />
+      <_ContentIncludedByDefault Remove="Data\Import\export_1611532987530.json" />
+      <_ContentIncludedByDefault Remove="Data\Import\export_1673197150625.json" />
+      <_ContentIncludedByDefault Remove="Data\Import\members_12521.json" />
     </ItemGroup>
 
     <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">

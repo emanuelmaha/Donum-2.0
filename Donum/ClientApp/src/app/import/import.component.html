@@ -2,23 +2,5 @@
 
 <p>This component demonstrates fetching data from the server.</p>
 
-<p *ngIf="!members?.length"><em>Loading...</em></p>
+<button (click)="import()">Import</button>
 
-<table class='table table-striped' aria-labelledby="tableLabel" *ngIf="members.length">
-  <thead>
-    <tr>
-      <th>Date</th>
-      <th>Temp. (C)</th>
-      <th>Temp. (F)</th>
-      <th>Summary</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr *ngFor="let forecast of members">
-      <td>{{ forecast.date }}</td>
-      <td>{{ forecast.temperatureC }}</td>
-      <td>{{ forecast.temperatureF }}</td>
-      <td>{{ forecast.summary }}</td>
-    </tr>
-  </tbody>
-</table>

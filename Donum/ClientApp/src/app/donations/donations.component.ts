@@ -1,23 +1,24 @@
-import { Component, Inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import {Component, Inject} from '@angular/core';
+import {HttpClient} from '@angular/common/http';
+import {Donations} from "../../models/donations";
 
 @Component({
-  selector: 'app-members',
-  templateUrl: './members.component.html',
-  styleUrls:['./members.component.css']
+  selector: 'app-donations',
+  templateUrl: './donations.component.html',
+  styleUrls: ['./donations.component.css']
 })
-export class MembersComponent {
-  public members: Member[] = [];
+export class DonationsComponent {
+  public donations: Donations[] = [];
+  public memberName: string = "";
 
-  constructor(http: HttpClient, @Inject('BASE_URL') baseUrl: string) {
-    http.get<Member[]>(baseUrl + 'members').subscribe(result => {
-      this.members = result;
+  constructor(private http: HttpClient, @Inject('BASE_URL') private baseUrl: string) {
+    this.search();
+  }
+
+  search() {
+    this.http.get<Donations[]>(this.baseUrl + 'donations?memberName=' + this.memberName).subscribe(result => {
+      this.donations = result;
     }, error => console.error(error));
   }
 }
 
-interface Member {
-  firstName: string;
-  lastName: number;
-  address: number;
-}

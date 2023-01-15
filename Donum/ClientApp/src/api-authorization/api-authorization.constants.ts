@@ -1,4 +1,4 @@
-export const ApplicationName = 'HelloWorld';
+export const ApplicationName = 'Donum';
 
 export const ReturnUrlType = 'returnUrl';
 

@@ -15,14 +15,17 @@ public class DonationsController : AuthorizeController
 	}
 
 	[HttpGet]
-	public List<Donation> Get(string memberName)
+	public List<Donation> Get(string? memberName = null)
 	{
 		if (!string.IsNullOrEmpty(memberName)) {
-			return _dbContext.Donations.Include(d => d.Member).Where(d =>
-				d.Member.FirstName.Contains(memberName) || d.Member.LastName.Contains(memberName) ||
-				(d.Member.FirstName + d.Member.LastName).Contains(memberName)).ToList();
+			return _dbContext.Donations.Include(d => d.Member).ToList().Where(d =>
+					d.Member.FirstName.IndexOf(memberName, StringComparison.OrdinalIgnoreCase) >= 0 ||
+					d.Member.LastName.IndexOf(memberName, StringComparison.OrdinalIgnoreCase) >= 0 ||
+					(d.Member.FirstName + d.Member.LastName).IndexOf(memberName, StringComparison.OrdinalIgnoreCase) >=
+					0)
+				.OrderByDescending(d => d.DateOfReceived).ToList();
 		}
 
-		return _dbContext.Donations.Include(d => d.Member).ToList();
+		return _dbContext.Donations.Include(d => d.Member).OrderByDescending(d => d.DateOfReceived).Take(100).ToList();
 	}
 }
