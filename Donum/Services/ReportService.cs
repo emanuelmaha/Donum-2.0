@@ -1,16 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
+﻿using System.Text.RegularExpressions;
 using Donum.Data;
 using Donum.Models;
+using Donum.Services.Interfaces;
 using iText.IO.Image;
 using iText.Kernel.Pdf;
 using iText.Kernel.Pdf.Canvas.Draw;
 using iText.Kernel.Utils;
-using iText.Layout;
 using iText.Layout.Element;
 using iText.Layout.Properties;
+using iText.StyledXmlParser.Jsoup.Nodes;
+using Document = iText.Layout.Document;
 
 namespace Donum.Services;
 
@@ -20,47 +19,48 @@ public class ReportService : IReportService
 
 	public ReportService(DataContext dbContext) => _dbContext = dbContext;
 
-	public void ProcessDonations(IEnumerable<Donation> data, DateTime reportDate)
+	public string ProcessDonations(IEnumerable<Donation> data, DateTime reportDate)
 	{
-		var sCurrentDirectory = AppDomain.CurrentDomain.BaseDirectory;
-		var basePath          = Path.Combine(sCurrentDirectory, @"..\Reports");
-		// string       sFilePath         = Path.GetFullPath(sFile);
-		// const string basePath          = "C:\\Users\\Emanuel Mahalean\\RiderProjects\\donum\\donum\\Reports\\";
+		var    sCurrentDirectory = AppDomain.CurrentDomain.BaseDirectory;
+		string basePath = Path.GetFullPath(Path.Combine(sCurrentDirectory, @"..\..\..\..\Reports"));
+		var    result = new PdfDocument(new PdfWriter(Path.Combine(basePath, "2022_Report_All_Members.pdf")));
+		var    merger = new PdfMerger(result);
 
-		var result = new PdfDocument(new PdfWriter(basePath + "2022_Report_All_Members.pdf"));
-		var merger = new PdfMerger(result);
-
-		IOrderedEnumerable<IGrouping<Guid, Donation>> group = data
-			.Where(d => d.DateOfReceived.Year == reportDate.Year).GroupBy(d => d.MemberId)
+		IOrderedEnumerable<IGrouping<Guid, Donation>> group = data.GroupBy(d => d.MemberId)
 			.OrderBy(grp => grp.Select(d => d.Sum).Sum());
 
 		foreach (IGrouping<Guid, Donation> memberDonations in group) {
-			var dest   = basePath + memberDonations.Key + ".pdf";
-			var writer = new PdfWriter(dest);
-			var pdfDoc = new PdfDocument(writer);
-			var doc    = new Document(pdfDoc);
+			var member        = _dbContext.Members.First(m => m.Id == memberDonations.Key);
+			var memberName    = Regex.Replace($"{member.FirstName} {member.LastName}", @" {2,}", " ");
+			var memberAddress = $"{member.Address}";
+			
+			var dest       = basePath + $@"\{memberName}.pdf";
+			var writer     = new PdfWriter(dest);
+			var pdfDoc     = new PdfDocument(writer);
+			var doc        = new Document(pdfDoc);
 			Image img = new Image(ImageDataFactory
-					.Create(@"C:\Users\Emanuel Mahalean\RiderProjects\donum\donum\wwwroot\grpc_logo.PNG"))
+					.Create(@"C:\Users\Emanuel.Mahalean\RiderProjects\Donum\Donum\wwwroot\grpc_logo.PNG"))
 				.SetTextAlignment(TextAlignment.LEFT).Scale(0.3F, 0.3F);
-			img.SetRelativePosition(10, 20, 10, 10);
+			img.SetFixedPosition(35, 760);
 			doc.Add(img);
 
 			var newline = new Paragraph(new Text("\n"));
-			doc.SetTopMargin(30);
-			doc.SetBottomMargin(50);
-			doc.ShowTextAligned(new Paragraph("Grace Romanian Pentecostal Church").SetFontSize(20), 135,
-				775, 1, TextAlignment.LEFT, VerticalAlignment.TOP, 0);
+			Paragraph? p = new Paragraph("Grace Romanian Pentecostal Church").SetFontSize(20);
+			p.SetTextAlignment(TextAlignment.CENTER);
+			p.SetVerticalAlignment(VerticalAlignment.TOP);
+			// p.SetMarginTop(20);
+			// p.SetMarginLeft(105);
+			doc.Add(p);
 			doc.Add(new Paragraph("Pastor, Vasile Streango").SetTextAlignment(TextAlignment.RIGHT).SetFontSize(16));
 			doc.Add(newline);
 			doc.Add(newline);
-			doc.Add(new Paragraph(new Text("Donation Report for year " + reportDate.Year))
+			doc.Add(new Paragraph(new Text("Report for the year " + reportDate.Year))
 				.SetTextAlignment(TextAlignment.CENTER)
 				.SetFontSize(16));
 			doc.Add(newline);
-			//todo get the member name
-			doc.Add(new Paragraph(memberDonations.Key.ToString()).SetTextAlignment(TextAlignment.LEFT));
+			doc.Add(new Paragraph(memberName).SetTextAlignment(TextAlignment.LEFT));
+			doc.Add(new Paragraph(memberAddress).SetTextAlignment(TextAlignment.LEFT));
 			doc.Add(new LineSeparator(new SolidLine()));
-			// doc.Add(line);
 			float[] pointColumnWidths = { 150F, 150F, 150F, 150F, 150F };
 			var     table             = new Table(pointColumnWidths);
 			table.AddCell(new Cell(1, 1).SetTextAlignment(TextAlignment.CENTER).Add(new Paragraph("No")));
@@ -117,5 +117,14 @@ public class ReportService : IReportService
 
 
 		result.Close();
+
+		return $"Report has been created for the {reportDate.ToLocalTime()}";
+	}
+
+	public string AllMembersReport(DateTime reportDate)
+	{
+		List<Donation> donation = _dbContext.Donations.Where(d => d.DateOfReceived.Year == reportDate.Year).ToList();
+
+		return ProcessDonations(donation, reportDate);
 	}
 }

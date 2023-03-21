@@ -1,0 +1,22 @@
+.example-button-row {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 10px;
+}
+
+.example-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+mat-card {
+  background-color: #626262;
+}
+
+
+
+mat-card {
+  align-items: flex-start;
+}

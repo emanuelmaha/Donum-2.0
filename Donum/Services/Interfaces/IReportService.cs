@@ -1,8 +1,9 @@
 using Donum.Models;
 
-namespace Donum.Services;
+namespace Donum.Services.Interfaces;
 
 public interface IReportService
 {
-	void ProcessDonations(IEnumerable<Donation> data, DateTime reportDate);
+	string ProcessDonations(IEnumerable<Donation> data, DateTime reportDate);
+	string AllMembersReport(DateTime reportDate);
 }

@@ -1,4 +1,5 @@
 using System.Globalization;
+using System.Text.RegularExpressions;
 using Donum.Data;
 using Donum.Helper;
 using Donum.Models;
@@ -25,9 +26,9 @@ public class ImporterService : IImporterService
 				TextInfo textInfo  = new CultureInfo("en-US", false).TextInfo;
 				var member = new Member
 				{
-					Address   = textInfo.ToTitleCase(memberDto.Address ?? ""),
-					FirstName = textInfo.ToTitleCase(memberDto.FirstName ?? ""),
-					LastName  = textInfo.ToTitleCase(memberDto.LastName ?? ""),
+					Address     = textInfo.ToTitleCase(Regex.Replace(memberDto?.Address ?? string.Empty, @" {2,}", " ") ?? ""),
+					FirstName   = textInfo.ToTitleCase(Regex.Replace(memberDto?.FirstName ?? string.Empty, @" {2,}", " ") ?? ""),
+					LastName   = textInfo.ToTitleCase(Regex.Replace(memberDto?.LastName ?? string.Empty, @" {2,}", " ") ?? ""),
 					PhoneNumber = string.Empty
 				};
 				List<JObject>? donations = donation?.Docs.Where(d => d["memberId"].ToString() == memberDto.Id).ToList();

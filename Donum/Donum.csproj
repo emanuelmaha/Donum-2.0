@@ -12,7 +12,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="itext7" Version="7.1.14" />
+        <PackageReference Include="itext7" Version="7.2.4" />
         <PackageReference Include="Microsoft.AspNetCore.ApiAuthorization.IdentityServer" Version="7.0.1" />
         <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="7.0.1" />
         <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="7.0.1" />
@@ -26,6 +26,7 @@
     <ItemGroup>
         <None Update="app.db" CopyToOutputDirectory="PreserveNewest" ExcludeFromSingleFile="true" />
         <None Remove="Data\Import\**" />
+        <None Remove="Reports\**" />
     </ItemGroup>
     <ItemGroup>
         <!-- Don't publish the SPA source files, but do show them in the project files list -->
@@ -33,12 +34,15 @@
         <None Remove="$(SpaRoot)**" />
         <None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**" />
         <Content Remove="Data\Import\**" />
+        <Content Remove="Reports\**" />
     </ItemGroup>
     <ItemGroup>
       <Compile Remove="Data\Import\**" />
+      <Compile Remove="Reports\**" />
     </ItemGroup>
     <ItemGroup>
       <EmbeddedResource Remove="Data\Import\**" />
+      <EmbeddedResource Remove="Reports\**" />
     </ItemGroup>
     <ItemGroup>
       <_ContentIncludedByDefault Remove="Data\Import\donations_41122.json" />
